@@ -17,8 +17,6 @@ export async function authAction({ request }) {
 
   const data = await request.formData();
   const authData = { email: data.get("email"), password: data.get("password") };
-  console.log("authData");
-  console.log(authData);
 
   const response = await fetch("http://localhost:8080/" + mode, {
     method: "POST",
@@ -37,6 +35,10 @@ export async function authAction({ request }) {
   }
   const responseData = await response.json();
   const token = responseData.token;
-  localStorage.setItem("token", token);
+  localStorage.setItem("authToken", token);
+  const tokenExpiration = new Date();
+  tokenExpiration.setHours(tokenExpiration.getHours() + 1);
+  localStorage.setItem("tokenExpiration", tokenExpiration.toISOString());
+
   return redirect("/");
 }
